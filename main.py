@@ -16,7 +16,7 @@ font = pygame.font.Font('font/Minecraft.ttf', 25)
 pygame.mixer.music.load('Music/Snake game.wav')
 
 
-def generate_starting_position():
+def random_starting_position():
     """Generate a random starting position within the screen."""
     random_range = (PIXEL_WIDTH // 2, SCREEN_WIDTH - PIXEL_WIDTH // 2, PIXEL_WIDTH)
     return [random.randrange(*random_range), random.randrange(*random_range)]
@@ -34,15 +34,15 @@ def display_score(score):
 
 
 # Snake setup
-snake_pixel = pygame.rect.Rect([0, 0, PIXEL_WIDTH - 2, PIXEL_WIDTH - 2])
-snake_pixel.center = generate_starting_position()
-snake = [snake_pixel.copy()]
+snake_bit = pygame.rect.Rect([0, 0, PIXEL_WIDTH - 2, PIXEL_WIDTH - 2])
+snake_bit.center = random_starting_position()
+snake = [snake_bit.copy()]
 snake_direction = (0, 0)
 snake_length = 1
 
-# Target setup
-target = pygame.rect.Rect([0, 0, PIXEL_WIDTH - 2, PIXEL_WIDTH - 2])
-target.center = generate_starting_position()
+# apple setup
+apple = pygame.rect.Rect([0, 0, PIXEL_WIDTH - 2, PIXEL_WIDTH - 2])
+apple.center = random_starting_position()
 
 # Game loop
 running = True
@@ -61,17 +61,17 @@ while running:
         SOUND = False
 
     # Game logic
-    if is_out_of_bound(snake_pixel) or snake_pixel.collidelist(snake[:-1]) != -1:
+    if is_out_of_bound(snake_bit) or snake_bit.collidelist(snake[:-1]) != -1:
         SOUND = True
         snake_length = 1
-        target.center = generate_starting_position()
-        snake_pixel.center = generate_starting_position()
-        snake = [snake_pixel.copy()]
+        apple.center = random_starting_position()
+        snake_bit.center = random_starting_position()
+        snake = [snake_bit.copy()]
 
-    if snake_pixel.center == target.center:
-        target.center = generate_starting_position()
+    if snake_bit.center == apple.center:
+        apple.center = random_starting_position()
         snake_length += 1
-        snake.append(snake_pixel.copy())
+        snake.append(snake_bit.copy())
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
@@ -85,11 +85,11 @@ while running:
 
     for snake_part in snake:
         pygame.draw.rect(screen, "blue", snake_part)
-    pygame.draw.rect(screen, "red", target)
+    pygame.draw.rect(screen, "red", apple)
 
     # Snake movement
-    snake_pixel.move_ip(snake_direction)
-    snake.append(snake_pixel.copy())
+    snake_bit.move_ip(snake_direction)
+    snake.append(snake_bit.copy())
     snake = snake[-snake_length:]
 
     # Display update
